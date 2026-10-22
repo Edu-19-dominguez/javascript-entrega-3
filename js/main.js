@@ -1,55 +1,72 @@
-function calcularSubtotal(precio, cantidad) {
-    return precio * cantidad;
-}
+const calcularSubtotal = (precio, cantidad) => precio * cantidad;
 
+const calcularDescuento = (subtotal, porcentaje) => subtotal * porcentaje / 100;
 
-const calcularDescuento = (subtotal, porcentaje) => subtotal * (porcentaje / 100);
-
-
-function iniciarSimulador() {
-    while (true) {
-        let producto = prompt("Ingresa el producto (o 'salir'):");
-        
-        if (!producto || producto.toLowerCase() === 'salir') {
-            alert("¡Muchas Gracias!");
-            break;
-        }
-
-        let precio = parseFloat(prompt("Ingresa el precio unitario:"));
-        let cantidad = parseInt(prompt("Ingresa la cantidad:"));
-
-      
-        if (isNaN(precio) || isNaN(cantidad) || precio <= 0 || cantidad <= 0) {
-            alert("Error: Valores inválidos.");
-            continue;
-        }
-
-        let subtotal = calcularSubtotal(precio, cantidad);
-        
-        
-        let porcDesc;
-        if (subtotal > 10000) {
-            porcDesc = 10;
-        } else {
-            porcDesc = 5;
-        }
-
-        let descuento = calcularDescuento(subtotal, porcDesc);
-        let totalFinal = subtotal - descuento;
-
-  
-        console.log(`Producto: ${producto} | Total: $${totalFinal}`);
-        
-        alert(`Resumen de compra:\n• Producto: ${producto}\n• Subtotal: $${subtotal}\n• Descuento (${porcDesc}%): -$${descuento}\n• Total a pagar: $${totalFinal}`);
-
-      
-        let respuesta = prompt("¿Deseas registrar otro producto? (si/no)")?.toLowerCase().trim();
-        if (!respuesta || !respuesta.startsWith('s')) {
-            alert("¡Muchas Gracias!");
-            break;
-        }
+function obtenerDescuento(subtotal) {
+    if (subtotal > 10000) {
+        return 10;
+    } else {
+        return 5;
     }
 }
 
+function mostrarResumen(producto, subtotal, porcentaje, descuento, total) {
+    alert(
+        "Resumen de compra" +
+        "\nProducto: " + producto +
+        "\nSubtotal: $" + subtotal +
+        "\nDescuento (" + porcentaje + "%): $" + descuento +
+        "\nTotal a pagar: $" + total
+    );
+}
 
-iniciarSimulador();
+let continuar = "si";
+
+while (continuar == "si") {
+
+    let producto = prompt("Ingrese el producto:");
+
+    if (producto != "" && producto != null) {
+
+        let precio = parseFloat(prompt("Ingrese el precio unitario:"));
+        let cantidad = parseInt(prompt("Ingrese la cantidad:"));
+
+        if (!isNaN(precio) && !isNaN(cantidad) && precio > 0 && cantidad > 0) {
+
+            let subtotal = calcularSubtotal(precio, cantidad);
+
+            let porcentaje = obtenerDescuento(subtotal);
+
+            let descuento = calcularDescuento(subtotal, porcentaje);
+
+            let total = subtotal - descuento;
+
+            console.log("Producto: " + producto);
+            console.log("Subtotal: $" + subtotal);
+            console.log("Descuento: $" + descuento);
+            console.log("Total: $" + total);
+
+            mostrarResumen(
+                producto,
+                subtotal,
+                porcentaje,
+                descuento,
+                total
+            );
+
+        } else {
+            alert("Error: ingrese valores validos.");
+        }
+
+        continuar = prompt("¿Desea ingresar otro producto? (si/no)");
+
+        if (continuar == null) {
+            continuar = "no";
+        }
+
+    } else {
+        continuar = "no";
+    }
+}
+
+alert("Muchas gracias.");
